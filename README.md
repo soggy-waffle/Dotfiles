@@ -1,7 +1,7 @@
 # Dotfiles
-Niri btw
+hyprland
 Arch btw
 Neovim btw
 Tmux Btw
 Kitty Btw
-Yambar Btw
+waybar btw
