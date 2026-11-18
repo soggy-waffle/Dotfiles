@@ -7,7 +7,7 @@ hl.env("XCURSOR_SIZE", "32")
 hl.config({
     general = {
         layout = "dwindle",
-        border_size = 2,
+        border_size = 0,
         gaps_in = 4,
         gaps_out = 4,
         ["col.active_border"]   = "#1F1F1F",
@@ -18,9 +18,10 @@ hl.config({
         active_opacity  = 1.0,
         inactive_opacity = 1,
         blur = {
-            enabled = true,
-            size = 4,
-            passes=5,
+            enabled = false,
+            size = 15,
+            passes = 2,
+            new_optimizations = true,
         },
         shadow = { enabled = false },
     },
@@ -61,8 +62,9 @@ hl.config({
     },
 })
 
--- -- -- No gaps when a workspace has one tiled window.
--- hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
+-- Smart gaps: no gaps when one tiled window.
+hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
+hl.workspace_rule({ workspace = "f[1]", gaps_out = 0, gaps_in = 0 })
 --
 -- Curves
 hl.curve("linear",  { type = "bezier", points = { {0.0, 0.0}, {1.0, 1.0} } })

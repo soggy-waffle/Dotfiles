@@ -79,6 +79,7 @@ local function set_lsp_keymaps(buffer_number)
     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { buffer = buffer_number })
     vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = buffer_number })
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = buffer_number })
+    vim.keymap.set("n", "gD", require("dwindle").goto_definition, { buffer = buffer_number })
     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = buffer_number })
     vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = buffer_number })
     vim.keymap.set("n", "<leader>zz", vim.lsp.buf.format, { buffer = buffer_number })
@@ -127,20 +128,20 @@ vim.lsp.config("gopls", {
     },
 })
 
--- vim.lsp.config("rust_analyzer", {
---     cmd = { "rust-analyzer" },
---     filetypes = { "rust" },
---     root_markers = { "Cargo.toml", "rust-project.json", ".git" },
---     capabilities = blink_capabilities,
---
---     settings = {
---         ["rust-analyzer"] = {
---             check = {
---                 command = "check",
---             },
---         },
---     },
--- })
+vim.lsp.config("rust_analyzer", {
+    cmd = { "rust-analyzer" },
+    filetypes = { "rust" },
+    root_markers = { "Cargo.toml", "rust-project.json", ".git" },
+    capabilities = blink_capabilities,
+
+    settings = {
+        ["rust-analyzer"] = {
+            check = {
+                command = "check",
+            },
+        },
+    },
+})
 vim.lsp.config("marksman", {
     cmd = { "marksman" },
     filetypes = { "markdown" },
@@ -226,7 +227,7 @@ vim.lsp.config("svelte", {
     capabilities = blink_capabilities,
 })
 
-vim.lsp.enable({ "gopls", "marksman", "ts_ls", "svelte", "vtsls" })
+vim.lsp.enable({ "gopls", "marksman", "ts_ls", "svelte", "vtsls", "rust_analyzer"})
 
 vim.api.nvim_create_autocmd("LspAttach", {
     desc = "Set LSP keymaps and disable LSP for large buffers",

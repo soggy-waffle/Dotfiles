@@ -1,25 +1,19 @@
--- ponytail: follow OpenAPI $ref without a language server.
-vim.keymap.set("n", "gd", function()
-    local line = vim.api.nvim_get_current_line()
-    local ref = line:match("%$ref:%s*['\"]([^'\"]+)['\"]")
-    if not ref then
-        local ok = pcall(vim.lsp.buf.definition)
-        if not ok then vim.cmd("normal! gd") end
-        return
-    end
-    local file, anchor = ref:match("^(.-)#(.*)$")
-    if anchor then
-        anchor = anchor:match("[^/]+$")
-    end
-    if file and file ~= "" then
-        local base = vim.fn.expand("%:h")
-        vim.cmd("edit " .. vim.fn.fnameescape(base .. "/" .. file))
-    end
-    if anchor and anchor ~= "" then
-        vim.fn.search("^\\s*" .. vim.fn.escape(anchor, "\\") .. "\\s*:", "w")
-        vim.cmd("normal! zz")
-    end
-end, { desc = "Go to $ref or definition" })
+-- dwindle splits plus gD for definition in a new split (see dwindle.lua).
+vim.keymap.set("n", "<C-w><CR>", function()
+    require("dwindle").split()
+end, { desc = "Dwindle split" })
+vim.keymap.set("n", "<C-CR>", function()
+    require("dwindle").split()
+end, { desc = "Dwindle split" })
+vim.keymap.set("n", "gD", function()
+    require("dwindle").goto_definition()
+end, { desc = "Go to definition in dwindle split" })
+vim.keymap.set("n", "<leader>ts", function()
+    require("statusline").toggle()
+end, { desc = "Toggle statusline" })
+vim.keymap.set("n", "<M-P>", function()
+    require("statusline").toggle()
+end, { desc = "Toggle statusline" })
 
 local silent = { noremap = true, silent = true }
 

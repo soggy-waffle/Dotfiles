@@ -27,10 +27,14 @@ vim.opt.termguicolors = true
 vim.opt.cmdheight = 0
 vim.opt.winborder = "rounded"
 vim.opt.laststatus = 0
+vim.opt.ruler = false
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
+vim.opt.expandtab = false
+vim.opt.fileformat = "unix"
+vim.opt.fileformats = "unix,dos,mac"
+vim.opt.fixendofline = true
 vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.undofile = false
@@ -40,6 +44,24 @@ vim.opt.autoread = true
 
 local general_augroup = vim.api.nvim_create_augroup("UserConfigGeneral", { clear = true })
 
+vim.api.nvim_create_autocmd("BufWritePre", {
+    desc = "Trim trailing whitespace on save",
+    group = general_augroup,
+    pattern = "*",
+    command = [[%s/\s\+$//e]],
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+    desc = "Use spaces for json yaml toml",
+    group = general_augroup,
+    pattern = { "json", "jsonc", "yaml", "toml" },
+    callback = function()
+        vim.opt_local.expandtab = true
+        vim.opt_local.tabstop = 2
+        vim.opt_local.softtabstop = 2
+        vim.opt_local.shiftwidth = 2
+    end,
+})
 vim.api.nvim_create_autocmd("TextYankPost", {
     desc = "Highlight yanked text",
     group = general_augroup,

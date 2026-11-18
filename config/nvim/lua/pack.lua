@@ -103,8 +103,49 @@ require("lazy").setup({
             },
         },
     },
+    "sindrets/diffview.nvim",
     "neovim/nvim-lspconfig",
     "echasnovski/mini.nvim",
+    {
+        "nvim-focus/focus.nvim",
+        version = false,
+        config = function()
+            require("focus").setup({
+                enable = true,
+                commands = true,
+                autoresize = {
+                    enable = true,
+                    width = math.floor(vim.o.columns * 0.75),
+                    height = math.floor(vim.o.lines * 0.8),
+                    minwidth = 15,
+                    minheight = 5,
+                    focusedwindow_minwidth = 0,
+                    focusedwindow_minheight = 0,
+                    height_quickfix = 10,
+                    equalise_min_cols = 0,
+                    equalise_min_rows = 0,
+                },
+                split = {
+                    bufnew = false,
+                    tmux = false,
+                },
+                ui = {
+                    number = false,
+                    relativenumber = false,
+                    hybridnumber = false,
+                    absolutenumber_unfocussed = false,
+                    cursorline = true,
+                    cursorcolumn = false,
+                    colorcolumn = {
+                        enable = false,
+                        list = "+1",
+                    },
+                    signcolumn = true,
+                    winhighlight = false,
+                },
+            })
+        end,
+    },
     {
         dir = "~/.config/nvim/tmux-nvim",
         name = "tmux-nvim",
