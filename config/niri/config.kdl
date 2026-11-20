@@ -68,7 +68,7 @@ layout {
 
 // Autostart ported from ~/.config/hypr/autostart.lua.
 spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-spawn-sh-at-startup "swaybg -o '*' -i '/home/wizard/.config/hypr/wallpaper.jpg' -m fill"
+spawn-sh-at-startup "swaybg -o '*' -i '/home/wizard/.config/hypr/wallpaper.webp' -m fill"
 spawn-sh-at-startup "waybar -c /home/wizard/.config/waybar/config.json -s /home/wizard/.config/waybar/style.css"
 spawn-sh-at-startup "trash-empty -f 10"
 spawn-sh-at-startup "brightnessctl s 0"
