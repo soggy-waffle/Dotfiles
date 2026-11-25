@@ -27,14 +27,14 @@ menu:
     desc: GitHub
     submenu:
       - key: "p"
-        desc: Profile (PS-Wizard)
-        cmd: zen-browser https://github.com/PS-Wizard/
+        desc: Profile (soggy-waffle)
+        cmd: zen-browser https://github.com/soggy-waffle/
       - key: "d"
         desc: Dotfiles
-        cmd: zen-browser https://github.com/PS-Wizard/Dotfiles
+        cmd: zen-browser https://github.com/soggy-waffle/Dotfiles
       - key: "s"
         desc: School
-        cmd: zen-browser https://github.com/PS-Wizard/School
+        cmd: zen-browser https://github.com/soggy-waffle/School
 
   - key: "l"
     desc: AI
@@ -53,7 +53,7 @@ menu:
     desc: Usage Limits Codex
     submenu:
       - key: "c"
-        desc: Claude Usage Limit 
+        desc: Claude Usage Limit
         cmd: zen-browser https://claude.ai/new#settings/usage
       - key: "l"
         desc: Chatgpt Codex Usage Limits

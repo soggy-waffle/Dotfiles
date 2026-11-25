@@ -45,6 +45,11 @@ window#waybar {
 }
 
 #clock,
+#clock-denver,
+#clock-sydney,
+#custom-sep-1,
+#custom-sep-2,
+#custom-sep-3,
 #custom-uptime,
 #custom-ny-countdown,
 #custom-time-tracker,
@@ -65,6 +70,20 @@ window#waybar {
   color: #d4c7a1;
   font-weight: 700;
   font-size: 12px;
+}
+
+#clock-denver,
+#clock-sydney {
+  color: #a89984;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+#custom-sep-1,
+#custom-sep-2,
+#custom-sep-3 {
+  color: #665c54;
+  font-size: 8px;
 }
 
 #temperature.critical,

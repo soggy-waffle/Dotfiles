@@ -5,14 +5,45 @@
   "height": 30,
   "spacing": 7,
   "margin": "0 0px 0px 0px",
-  "modules-left": ["clock", "custom/uptime"],
+  "modules-left": ["clock", "custom/sep-1", "clock#denver", "custom/sep-2", "clock#sydney", "custom/sep-3", "custom/uptime"],
   "modules-center": ["custom/ny-countdown", "custom/time-tracker"],
   "modules-right": ["cpu", "memory", "temperature", "pulseaudio", "custom/headphones-battery", "network", "battery"],
 
   "clock": {
     "interval": 60,
-    "format": "<b>{:%H:%M}</b>",
-    "format-alt": "{:%A, %B %d, %Y}",
+    "format": "<b>KAT {:%H:%M}</b>",
+    "format-alt": "KAT {:%A, %B %d, %Y}",
+    "tooltip": false
+  },
+
+  "clock#denver": {
+    "interval": 60,
+    "timezone": "America/Denver",
+    "format": "<b>DEN {:%H:%M}</b>",
+    "format-alt": "DEN {:%A, %B %d}",
+    "tooltip": false
+  },
+
+  "clock#sydney": {
+    "interval": 60,
+    "timezone": "Australia/Sydney",
+    "format": "<b>SYD {:%H:%M}</b>",
+    "format-alt": "SYD {:%A, %B %d}",
+    "tooltip": false
+  },
+
+  "custom/sep-1": {
+    "format": "-",
+    "tooltip": false
+  },
+
+  "custom/sep-2": {
+    "format": "-",
+    "tooltip": false
+  },
+
+  "custom/sep-3": {
+    "format": "-",
     "tooltip": false
   },
 
