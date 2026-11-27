@@ -132,7 +132,7 @@ menu:
         cmd: hyprctl reload
       - key: "b"
         desc: Restart swaybg
-        cmd: pkill swaybg; swaybg -i ~/.config/hypr/wallpaper.webp
+        cmd: pkill swaybg; swaybg -i ~/.config/hypr/wallpaper.png
 
   - key: "i"
     desc: Toggle Monochrome

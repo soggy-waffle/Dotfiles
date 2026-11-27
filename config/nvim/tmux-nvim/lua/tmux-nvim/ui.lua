@@ -47,6 +47,7 @@ function M.input_comment(on_done, opts)
     footer_pos = "center",
   })
   vim.wo[win].wrap = true
+  vim.wo[win].linebreak = true
   vim.wo[win].cursorline = true
   vim.wo[win].winhighlight = "Normal:Normal,FloatBorder:FloatBorder"
 
@@ -126,25 +127,86 @@ function M.input_comment(on_done, opts)
   })
 end
 
-function M._callout(text)
-  return { { { "╭─ ", "TmuxNvimCommentSign" }, { "💬 " .. text, "TmuxNvimCommentText" } } }
+-- Split text into screen lines of max `width` display cells.
+-- Keeps words together. Splits a word only if the word is too long.
+local function wrap_text(text, width)
+  width = math.max(20, width or 60)
+  local out = {}
+  for _, para in ipairs(vim.split(text, "\n", { plain = true })) do
+    if para == "" then
+      out[#out + 1] = ""
+    else
+      local cur = ""
+      for word in para:gmatch("%S+") do
+        if cur == "" then
+          if vim.fn.strdisplaywidth(word) <= width then
+            cur = word
+          else
+            -- word too long: hard split it
+            local part = ""
+            for _, code in ipairs(vim.fn.str2list(word, true)) do
+              local ch = vim.fn.nr2char(code)
+              if vim.fn.strdisplaywidth(part .. ch) > width then
+                out[#out + 1] = part
+                part = ch
+              else
+                part = part .. ch
+              end
+            end
+            if part ~= "" then out[#out + 1] = part end
+          end
+        elseif vim.fn.strdisplaywidth(cur .. " " .. word) <= width then
+          cur = cur .. " " .. word
+        else
+          out[#out + 1] = cur
+          cur = word
+        end
+      end
+      if cur ~= "" then out[#out + 1] = cur end
+    end
+  end
+  if #out == 0 then out = { "" } end
+  return out
+end
+
+-- One virt line per wrapped line, so long comments use many
+-- virtual lines and never run off the screen.
+function M._callout(text, width)
+  local lines = wrap_text(text, width)
+  local virt = {}
+  for i, line in ipairs(lines) do
+    local prefix = i == 1 and "╭─ 💬 " or "│  "
+    virt[#virt + 1] = { { prefix, "TmuxNvimCommentSign" }, { line, "TmuxNvimCommentText" } }
+  end
+  return virt
 end
 
 function M.decorate(id)
+  if decorations[id] then return end
   local c = comments.get(id)
   if not c then return end
+  if not c.bufnr or not vim.api.nvim_buf_is_valid(c.bufnr) then return end
   local ns = comments.ns
   local bars = {}
-  for line = c.start_line, c.end_line do
-    bars[#bars + 1] = vim.api.nvim_buf_set_extmark(c.bufnr, ns, line - 1, 0, {
-      sign_text = "▌",
-      sign_hl_group = "TmuxNvimCommentSign",
-      line_hl_group = "TmuxNvimCommentLine",
-      right_gravity = false,
-    })
-  end
+  local ok_bars, _ = pcall(function()
+    for line = c.start_line, c.end_line do
+      bars[#bars + 1] = vim.api.nvim_buf_set_extmark(c.bufnr, ns, line - 1, 0, {
+        sign_text = "▌",
+        sign_hl_group = "TmuxNvimCommentSign",
+        line_hl_group = "TmuxNvimCommentLine",
+        right_gravity = false,
+      })
+    end
+  end)
+  if not ok_bars then return end
+  -- content width follows the code window width
+  local winid = vim.fn.bufwinid(c.bufnr)
+  if winid == -1 then winid = vim.api.nvim_get_current_win() end
+  local win_width = 60
+  pcall(function() win_width = vim.api.nvim_win_get_width(winid) end)
+  local content_width = math.min(math.max(win_width - 8, 20), 100)
   local callout = vim.api.nvim_buf_set_extmark(c.bufnr, ns, c.start_line - 1, 0, {
-    virt_lines = M._callout(c.text),
+    virt_lines = M._callout(c.text, content_width),
     virt_lines_above = true,
   })
   decorations[id] = { bars = bars, callout = callout, bufnr = c.bufnr }
@@ -161,8 +223,10 @@ function M.undecorate(id)
   decorations[id] = nil
 end
 
+-- Single safe row for the list buffer (no newline chars).
 function M.comment_row(c)
-  return string.format("%s:%d-%d  %s", vim.fn.fnamemodify(c.file, ":t"), c.start_line, c.end_line, c.text)
+  local one = c.text:gsub("\n", " ⏎ ")
+  return string.format("%s:%d-%d  %s", vim.fn.fnamemodify(c.file, ":t"), c.start_line, c.end_line, one)
 end
 
 function M.comment_list(handlers)
@@ -180,9 +244,11 @@ function M.comment_list(handlers)
   local function win_config()
     local width = 46
     for _, c in ipairs(rows) do
-      width = math.max(width, vim.fn.strdisplaywidth(M.comment_row(c)) + 2)
+      local head = string.format("%s:%d-%d  %s", vim.fn.fnamemodify(c.file, ":t"), c.start_line, c.end_line,
+        c.text:gsub("\n", " ⏎ "):sub(1, 60))
+      width = math.max(width, vim.fn.strdisplaywidth(head) + 2)
     end
-    width = math.min(width, math.max(46, vim.o.columns - 6))
+    width = math.min(width, 100, math.max(46, vim.o.columns - 6))
     local height = math.max(1, math.min(#rows, 12))
     return {
       relative = "editor",
@@ -201,7 +267,8 @@ function M.comment_list(handlers)
 
   local win = vim.api.nvim_open_win(buf, true, win_config())
   vim.wo[win].cursorline = true
-  vim.wo[win].wrap = false
+  vim.wo[win].wrap = true
+  vim.wo[win].linebreak = true
 
   local function render()
     rows = comments.list()

@@ -15,6 +15,15 @@ local function map(mode, lhs, rhs, desc)
   vim.keymap.set(mode, lhs, rhs, { desc = desc })
 end
 
+-- Attach saved comments to a buffer and show their decorations.
+local function restore_buf(bufnr)
+  if not vim.api.nvim_buf_is_valid(bufnr) then return end
+  local ids = comments.attach(bufnr)
+  for _, id in ipairs(ids) do
+    pcall(ui.decorate, id)
+  end
+end
+
 function M.setup(config)
   M.config = vim.tbl_deep_extend("force", M.config, config or {})
   if M.config.keymaps then
@@ -27,6 +36,23 @@ function M.setup(config)
     map("n", "<leader>s", function() M.send_all({ submit = false }) end, "tmux-nvim: send comments (no submit)")
     map("n", "<leader>d", function() M.delete_all() end, "tmux-nvim: delete all comments")
   end
+
+  -- Saved comments live on disk until deletion. Restore them when
+  -- a file is opened, and flush line moves on write and on exit.
+  local grp = vim.api.nvim_create_augroup("TmuxNvimPersist", { clear = true })
+  vim.api.nvim_create_autocmd({ "BufReadPost", "BufEnter" }, {
+    group = grp,
+    callback = function(a) restore_buf(a.buf) end,
+  })
+  vim.api.nvim_create_autocmd({ "BufWritePost", "VimLeavePre" }, {
+    group = grp,
+    callback = function() comments.flush() end,
+  })
+  vim.schedule(function()
+    for _, b in ipairs(vim.api.nvim_list_bufs()) do
+      if vim.api.nvim_buf_is_loaded(b) then restore_buf(b) end
+    end
+  end)
 end
 
 local function add_comment(start_line, end_line)

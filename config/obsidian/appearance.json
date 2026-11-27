@@ -2,8 +2,7 @@
   "cssTheme": "Baseline",
   "enabledCssSnippets": [
     "focus-mode",
-    "claude-touches",
-    "glass-dark"
+    "claude-touches"
   ],
   "theme": "obsidian",
   "textFontFamily": "Geist",

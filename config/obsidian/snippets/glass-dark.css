@@ -1,25 +1,28 @@
-/* Glass dark for Hyprland blur. Dark mode only. Light mode stays paper. */
-/* ponytail: Linux Electron has no per-pixel alpha, so CSS stays opaque. */
-/* Hypr blends the whole window at 0.9 (see rules.lua obsidian-glass). */
+/* Glass dark for Hyprland blur. Dark mode only. */
+/* ON = transparent. OFF = opaque. Do not use with solid-window. */
+/* You must also set Settings > Appearance > Translucent window = ON. */
+/* Hyprland blur shows through. Linux Electron has no per-pixel alpha. */
+/* Compositor blends the full window. CSS only sets translucency. */
 
-html body.theme-dark {
-  --background-primary: #101010 !important;
-  --background-primary-alt: #101010 !important;
-  --background-secondary: #101010 !important;
-  --background-secondary-alt: #2a2a2a !important;
+body.theme-dark.is-translucent {
+  --background-primary: rgba(16, 16, 16, 0.72) !important;
+  --background-primary-alt: rgba(16, 16, 16, 0.72) !important;
+  --background-secondary: rgba(16, 16, 16, 0.72) !important;
+  --background-secondary-alt: rgba(42, 42, 42, 0.72) !important;
+  --workspace-background-translucent: rgba(16, 16, 16, 0.72) !important;
 }
 
-body.theme-dark .workspace,
-body.theme-dark .workspace-split,
-body.theme-dark .mod-left-split,
-body.theme-dark .mod-right-split,
-body.theme-dark .workspace-ribbon,
-body.theme-dark .workspace-tabs,
-body.theme-dark .workspace-tab-container,
-body.theme-dark .view-content,
-body.theme-dark .markdown-reading-view,
-body.theme-dark .markdown-source-view,
-body.theme-dark .titlebar,
-body.theme-dark .status-bar {
-  background-color: #101010 !important;
+body.theme-dark.is-translucent .workspace,
+body.theme-dark.is-translucent .workspace-split,
+body.theme-dark.is-translucent .mod-left-split,
+body.theme-dark.is-translucent .mod-right-split,
+body.theme-dark.is-translucent .workspace-ribbon,
+body.theme-dark.is-translucent .workspace-tabs,
+body.theme-dark.is-translucent .workspace-tab-container,
+body.theme-dark.is-translucent .view-content,
+body.theme-dark.is-translucent .markdown-reading-view,
+body.theme-dark.is-translucent .markdown-source-view,
+body.theme-dark.is-translucent .titlebar,
+body.theme-dark.is-translucent .status-bar {
+  background-color: transparent !important;
 }

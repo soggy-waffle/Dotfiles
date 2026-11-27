@@ -144,6 +144,16 @@ require("lazy").setup({
                     winhighlight = false,
                 },
             })
+            vim.g.focus_disable = true
+            -- Silence E36: Not enough room, keep other errors.
+            local focus = require("focus")
+            local orig_resize = focus.resize
+            focus.resize = function(...)
+                local ok, err = pcall(orig_resize, ...)
+                if not ok and err and not tostring(err):match("E36") then
+                    vim.notify(tostring(err), vim.log.levels.ERROR)
+                end
+            end
         end,
     },
     {
